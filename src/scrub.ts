@@ -26,7 +26,15 @@
  * Preserved: all tool policy, tone rules, task management guidance, code
  * references section, Sisyphus orchestration rules (Phase 0, explore/
  * librarian, Oracle), and any user CLAUDE.md content appended by opencode.
+ *
+ * Modes:
+ *   - aggressive (default): maximum fingerprint removal, including env blocks
+ *     and minor prompt cleanup
+ *   - minimal: only remove the strongest identity/fingerprint lines while
+ *     preserving prompt structure and orchestration/env blocks
  */
+
+export type ScrubMode = "aggressive" | "minimal"
 
 /** Vanilla L1 identity line from anthropic.txt */
 const OPENCODE_IDENTITY_LINE =
@@ -78,16 +86,26 @@ const GENERIC_IDENTITY =
 const GENERIC_OBJECTIVITY =
   "It is best for the user if the assistant honestly applies"
 
-export function scrubOpencodeFingerprints(systemPrompt: string): string {
+export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode = "aggressive"): string {
   if (!systemPrompt) return systemPrompt
-  return systemPrompt
-    .replace(OPENCODE_IDENTITY_LINE, GENERIC_IDENTITY)
+
+  const scrubbedIdentity = mode === "minimal"
+    ? systemPrompt.replace(OPENCODE_IDENTITY_LINE, "")
+    : systemPrompt.replace(OPENCODE_IDENTITY_LINE, GENERIC_IDENTITY)
+
+  const scrubbedCore = scrubbedIdentity
     .replace(OPENCODE_FEEDBACK_BLOCK, "")
     .replace(OPENCODE_DOCS_PARAGRAPH, "")
     .replace(OPENCODE_OBJECTIVITY_BRAND, GENERIC_OBJECTIVITY)
     .replace(OMO_IDENTITY_LINE, "")
-    .replace(OMO_ENV_BLOCK, "")
     .replace(POWERED_BY_LINE, "")
+
+  if (mode === "minimal") {
+    return scrubbedCore.replace(/\s+$/, "")
+  }
+
+  return scrubbedCore
+    .replace(OMO_ENV_BLOCK, "")
     .replace(OPENCODE_ENV_BLOCK, "\n")
     .replace(OPENCODE_BRAND_TOKEN, "the assistant")
     .replace(/\n{3,}/g, "\n\n")
