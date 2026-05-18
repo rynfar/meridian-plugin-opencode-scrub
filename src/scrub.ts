@@ -1,33 +1,40 @@
 /**
  * Scrub opencode-identifying fingerprints from a system prompt.
  *
- * Targets both vanilla OpenCode (from anomalyco/opencode's built-in
- * `anthropic.txt`) and OhMyOpenCode-style custom personas (Sisyphus, etc.).
- * Each rule is an independent, idempotent regex — if a pattern isn't present
- * the rule no-ops, so the same plugin handles both variants without
- * configuration.
+ * Targets both vanilla OpenCode (from sst/opencode's built-in `anthropic.txt`)
+ * and OhMyOpenCode-style custom personas (Sisyphus, etc.). Each rule is an
+ * independent, idempotent regex — if a pattern isn't present the rule no-ops,
+ * so the same plugin handles both variants without configuration.
  *
  * Detection vectors scrubbed:
  *   - "OpenCode" / "opencode" brand tokens in the opening identity line and
  *     embedded prose
  *   - The feedback block pointing to github.com/anomalyco/opencode
  *   - The "When the user directly asks about OpenCode" docs paragraph
- *   - OhMyOpenCode's Sisyphus identity line (quoted or bold form, all
- *     occurrences) and the OMO 4.x <agent-identity> wrapper block
- *   - Residual "OhMyOpenCode" brand tokens
+ *   - OhMyOpenCode's "Sisyphus ... from OhMyOpenCode" identity line
  *   - The runtime <omo-env> block
  *   - The self-outing "You are powered by the model named ..." line that
  *     opencode's environment() builder appends (strongest third-party tell —
  *     Claude Code never emits this phrasing)
  *   - The duplicate "Here is some useful information about the environment
- *     you are running in:" preamble and redundant <env> fields. Keep a bare
- *     Working directory line so client-side users do not erase the only path
- *     Meridian can read before it chooses the SDK working directory.
+ *     you are running in:" preamble + <env> block. Claude Code's preset
+ *     already injects this; opencode appending its own copy makes the
+ *     preamble appear twice in the final system prompt, which Anthropic's
+ *     billing layer treats as a third-party-impersonation signal and gates
+ *     opus behind Extra Usage (sonnet/haiku unaffected).
  *
  * Preserved: all tool policy, tone rules, task management guidance, code
  * references section, Sisyphus orchestration rules (Phase 0, explore/
  * librarian, Oracle), and any user CLAUDE.md content appended by opencode.
+ *
+ * Modes:
+ *   - aggressive (default): maximum fingerprint removal, including env blocks
+ *     and minor prompt cleanup
+ *   - minimal: only remove the strongest identity/fingerprint lines while
+ *     preserving prompt structure and orchestration/env blocks
  */
+
+export type ScrubMode = "aggressive" | "minimal"
 
 /** Vanilla L1 identity line from anthropic.txt */
 const OPENCODE_IDENTITY_LINE =
@@ -48,27 +55,9 @@ const OPENCODE_OBJECTIVITY_BRAND =
 /** Any residual bare "OpenCode"/"opencode" tokens in preserved prose */
 const OPENCODE_BRAND_TOKEN = /\bOpenCode\b/g
 
-/**
- * OhMyOpenCode Sisyphus identity line. OMO 4.x variants differ per model
- * route: the default persona quotes the name (`You are "Sisyphus" ...`) while
- * Claude-routed prompts bold it (`You are **Sisyphus** ...`), and some
- * variants put "OhMyOpenCode" mid-sentence rather than sentence-final.
- * Global, because the line now appears both inside <agent-identity> and in
- * <Role>.
- */
+/** OhMyOpenCode Sisyphus identity line */
 const OMO_IDENTITY_LINE =
-  /You are ("|\*\*)Sisyphus("|\*\*)[^\n]*OhMyOpenCode[^\n]*\n+/g
-
-/**
- * OMO 4.x <agent-identity> wrapper block ("Your designated identity for this
- * session ... always identify as Sisyphus ..."), injected by
- * buildAgentIdentitySection ahead of every Sisyphus variant. Strongest OMO
- * fingerprint — removed wholesale like <omo-env>.
- */
-const OMO_AGENT_IDENTITY_BLOCK = /<agent-identity>[\s\S]*?<\/agent-identity>\n*/g
-
-/** Residual bare "OhMyOpenCode" tokens in preserved prose */
-const OMO_BRAND_TOKEN = /\bOhMyOpenCode\b/g
+  /You are "Sisyphus"[^\n]*from OhMyOpenCode\.[^\n]*\n+/
 
 /** The <omo-env>...</omo-env> block */
 const OMO_ENV_BLOCK = /<omo-env>[\s\S]*?<\/omo-env>\n*/
@@ -86,17 +75,10 @@ const POWERED_BY_LINE =
  * own copy on top of the preset, the preamble appears twice in the final
  * system prompt and Anthropic gates opus behind Extra Usage. Bisected
  * 2026-04-21: removing this block (or just the preamble line) makes opus
- * succeed; sonnet/haiku unaffected. Retain only a bare cwd field without the
- * duplicate preamble: Meridian reads this field from the incoming prompt when
- * the scrub function is used client-side, before Meridian receives the body.
+ * succeed; sonnet/haiku unaffected.
  */
 const OPENCODE_ENV_BLOCK =
-  /\n?Here is some useful information about the environment you are running in:\n<env>[\s\S]*?<\/env>\n?/
-
-function keepClientCwd(block: string): string {
-  const cwd = block.match(/(?:^|\n)[ \t]*Working directory:[ \t]*([^\n<]+)/i)?.[1]?.trim()
-  return cwd ? `\n<env>\n  Working directory: ${cwd}\n</env>\n` : "\n"
-}
+  /\nHere is some useful information about the environment you are running in:\n<env>[\s\S]*?<\/env>\n/
 
 const GENERIC_IDENTITY =
   "You are an expert coding assistant. You help users with software engineering tasks by reading files, executing commands, editing code, and writing new files.\n"
@@ -104,20 +86,28 @@ const GENERIC_IDENTITY =
 const GENERIC_OBJECTIVITY =
   "It is best for the user if the assistant honestly applies"
 
-export function scrubOpencodeFingerprints(systemPrompt: string): string {
+export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode = "aggressive"): string {
   if (!systemPrompt) return systemPrompt
-  return systemPrompt
-    .replace(OPENCODE_IDENTITY_LINE, GENERIC_IDENTITY)
+
+  const scrubbedIdentity = mode === "minimal"
+    ? systemPrompt.replace(OPENCODE_IDENTITY_LINE, "")
+    : systemPrompt.replace(OPENCODE_IDENTITY_LINE, GENERIC_IDENTITY)
+
+  const scrubbedCore = scrubbedIdentity
     .replace(OPENCODE_FEEDBACK_BLOCK, "")
     .replace(OPENCODE_DOCS_PARAGRAPH, "")
     .replace(OPENCODE_OBJECTIVITY_BRAND, GENERIC_OBJECTIVITY)
-    .replace(OMO_AGENT_IDENTITY_BLOCK, "")
     .replace(OMO_IDENTITY_LINE, "")
-    .replace(OMO_ENV_BLOCK, "")
     .replace(POWERED_BY_LINE, "")
-    .replace(OPENCODE_ENV_BLOCK, keepClientCwd)
+
+  if (mode === "minimal") {
+    return scrubbedCore.replace(/\s+$/, "")
+  }
+
+  return scrubbedCore
+    .replace(OMO_ENV_BLOCK, "")
+    .replace(OPENCODE_ENV_BLOCK, "\n")
     .replace(OPENCODE_BRAND_TOKEN, "the assistant")
-    .replace(OMO_BRAND_TOKEN, "the assistant")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/\s+$/, "")
 }

@@ -13,11 +13,24 @@ When Meridian routes OpenCode → Claude Max, those identity sections are:
 1. **Redundant** — Claude Code's preset already owns identity, tone, safety, and tool-use guidance.
 2. **A detection fingerprint** — they give Anthropic's detection a clear "this isn't Claude Code" signal that can trigger third-party extra-usage errors or rate-limit flags.
 
-This plugin surgically removes those lines and replaces the identity paragraph with a neutral, generic coding-assistant framing. It removes the duplicate environment preamble and redundant fields while keeping a bare `<env>` block with the client `Working directory` line. Tone rules, task management, tool usage policy, code references, and user CLAUDE.md content remain intact.
+This plugin surgically removes those lines and replaces the identity paragraph with a neutral, generic coding-assistant framing. Everything else in OpenCode's prompt (tone rules, task management, tool usage policy, code references, the env block, any user CLAUDE.md appended by OpenCode) is preserved verbatim.
 
 The scrub also handles [OhMyOpenCode](https://github.com/anomalyco/ohmyopencode)-style custom personas (Sisyphus et al.): the `You are "Sisyphus" ... from OhMyOpenCode.` identity line and the `<omo-env>...</omo-env>` block are stripped, while the persona's orchestration rules (Phase 0 intent gate, explore/librarian delegation, Oracle consultation, tone guidelines) are preserved.
 
 The scrub is **idempotent** — running it twice on the same string is a no-op.
+
+## Modes
+
+The plugin supports two modes via `MERIDIAN_OPENCODE_SCRUB_MODE`:
+
+- **`aggressive`** (default) — current behavior. Strips duplicate OpenCode env preamble, strips `<omo-env>`, replaces the identity line with a generic one, and normalizes leftover spacing.
+- **`minimal`** — removes only the strongest fingerprint lines while preserving prompt structure. Keeps `<env>` and `<omo-env>` blocks intact and does not inject a replacement identity line.
+
+Example:
+
+```bash
+MERIDIAN_OPENCODE_SCRUB_MODE=minimal meridian
+```
 
 ## Install
 
@@ -65,16 +78,15 @@ Verify at `http://localhost:3456/plugins` — you should see `opencode-scrub` li
 |---|---|
 | No system prompt | unchanged |
 | System prompt without OpenCode identity markers | unchanged (idempotent) |
-| Vanilla OpenCode (`anthropic.txt`) | identity line swapped for generic, feedback block removed, docs paragraph removed, "OpenCode honestly applies" neutralized |
-| OhMyOpenCode/Sisyphus prompt | OMO identity line removed, `<omo-env>` block removed, "You are powered by..." line removed; persona rules preserved |
+| Vanilla OpenCode (`anthropic.txt`) | aggressive: identity line swapped for generic; minimal: identity line removed; both remove feedback/docs blocks and neutralize `OpenCode honestly applies` |
+| OhMyOpenCode/Sisyphus prompt | aggressive: OMO identity + `<omo-env>` removed; minimal: only OMO identity removed; both remove `You are powered by...`; persona rules preserved |
 | OpenCode prompt + user CLAUDE.md additions | identity stripped, all user content preserved |
-| OpenCode environment preamble + `<env>` | duplicate preamble and redundant fields removed; bare `Working directory` retained for Meridian's cwd extraction |
 
-The plugin runs for the `opencode` adapter and for `passthrough` requests that still carry an OpenCode-specific identity or runtime marker. This covers OpenCode routed through LiteLLM when its client headers are removed. Other passthrough prompts, including genuine Claude Code prompts with an `<env>` block, remain byte-for-byte unchanged.
+The plugin is scoped to `adapters: ["opencode"]`, so it has no effect on requests from pi, Crush, Droid, ForgeCode, or the passthrough adapter.
 
 ## Rules
 
-The scrub applies 8 independent regex replacements, each idempotent and each a no-op when its pattern is absent:
+The aggressive scrub applies 8 independent regex replacements, each idempotent and each a no-op when its pattern is absent. Minimal mode applies only rules 1-5 and 7:
 
 1. **Vanilla identity line** — `You are OpenCode, the best coding agent on the planet.` → generic
 2. **Feedback block** — `If the user asks for help or wants to give feedback...github.com/anomalyco/opencode`
@@ -85,10 +97,7 @@ The scrub applies 8 independent regex replacements, each idempotent and each a n
 7. **Powered-by line** — `You are powered by the model named ...`
 8. **Residual brand tokens** — bare `OpenCode` → `the assistant`
 
-When `scrubOpencodeFingerprints` is called inside an OpenCode client hook, the
-bare working-directory line keeps the client's project path available to
-Meridian. Server-side use remains compatible: Meridian extracts the raw path
-before applying its plugin transform.
+`aggressive` also strips OpenCode's duplicate `<env>` preamble block; `minimal` preserves it.
 
 ## Development
 
