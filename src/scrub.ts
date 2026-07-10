@@ -91,7 +91,7 @@ const POWERED_BY_LINE =
  * succeed; sonnet/haiku unaffected.
  */
 const OPENCODE_ENV_BLOCK =
-  /\nHere is some useful information about the environment you are running in:\n<env>[\s\S]*?<\/env>\n/
+  /\n?Here is some useful information about the environment you are running in:\n<env>[\s\S]*?<\/env>\n?/
 
 const GENERIC_IDENTITY =
   "You are an expert coding assistant. You help users with software engineering tasks by reading files, executing commands, editing code, and writing new files.\n"

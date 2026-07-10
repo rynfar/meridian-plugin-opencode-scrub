@@ -80,6 +80,41 @@ describe("scrubOpencodeFingerprints — OMO 4.x Sisyphus (issue #1 drift)", () =
   })
 })
 
+describe("scrubOpencodeFingerprints — duplicate <env> block (metering trigger)", () => {
+  // opencode's environment() output: powered-by line + the full <env> block
+  // whose fields duplicate the Claude Code preset's own env. This is the
+  // signal Anthropic meters as Extra Usage (CrazyCoder bisected 2026-04-21).
+  const ENV_APPEND = `You are powered by the model named claude-haiku-4-5. The exact model ID is anthropic/claude-haiku-4-5
+Here is some useful information about the environment you are running in:
+<env>
+  Working directory: /tmp
+  Workspace root folder: /tmp
+  Is directory a git repo: no
+  Platform: darwin
+  Today's date: Thu Jul 10 2026
+</env>`
+
+  test("strips the env block and preamble when it ends the string (no trailing newline)", () => {
+    const out = scrubOpencodeFingerprints(ENV_APPEND)
+    expect(out).not.toContain("<env>")
+    expect(out).not.toContain("useful information about the environment")
+    expect(out).not.toContain("You are powered by the model named")
+  })
+
+  test("strips the env block when content follows it (trailing newline present)", () => {
+    const withTail = ENV_APPEND + "\n\nProject guidance: prefer TypeScript.\n"
+    const out = scrubOpencodeFingerprints(withTail)
+    expect(out).not.toContain("<env>")
+    expect(out).not.toContain("useful information about the environment")
+    expect(out).toContain("Project guidance: prefer TypeScript.")
+  })
+
+  test("is idempotent on the env append", () => {
+    const once = scrubOpencodeFingerprints(ENV_APPEND)
+    expect(scrubOpencodeFingerprints(once)).toBe(once)
+  })
+})
+
 describe("scrubOpencodeFingerprints — pass-through", () => {
   test("no-op on a prompt without opencode/OMO fingerprints", () => {
     const plain =
