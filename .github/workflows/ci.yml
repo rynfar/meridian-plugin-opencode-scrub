@@ -20,7 +20,10 @@ jobs:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
 
+      - uses: oven-sh/setup-bun@v2
+
       - run: npm ci
+      - run: bun test
       - run: npm run build
 
       # Pack the tarball so we catch any `files` / `.npmignore` regressions

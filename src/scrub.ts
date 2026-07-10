@@ -1,17 +1,20 @@
 /**
  * Scrub opencode-identifying fingerprints from a system prompt.
  *
- * Targets both vanilla OpenCode (from sst/opencode's built-in `anthropic.txt`)
- * and OhMyOpenCode-style custom personas (Sisyphus, etc.). Each rule is an
- * independent, idempotent regex — if a pattern isn't present the rule no-ops,
- * so the same plugin handles both variants without configuration.
+ * Targets both vanilla OpenCode (from anomalyco/opencode's built-in
+ * `anthropic.txt`) and OhMyOpenCode-style custom personas (Sisyphus, etc.).
+ * Each rule is an independent, idempotent regex — if a pattern isn't present
+ * the rule no-ops, so the same plugin handles both variants without
+ * configuration.
  *
  * Detection vectors scrubbed:
  *   - "OpenCode" / "opencode" brand tokens in the opening identity line and
  *     embedded prose
  *   - The feedback block pointing to github.com/anomalyco/opencode
  *   - The "When the user directly asks about OpenCode" docs paragraph
- *   - OhMyOpenCode's "Sisyphus ... from OhMyOpenCode" identity line
+ *   - OhMyOpenCode's Sisyphus identity line (quoted or bold form, all
+ *     occurrences) and the OMO 4.x <agent-identity> wrapper block
+ *   - Residual "OhMyOpenCode" brand tokens
  *   - The runtime <omo-env> block
  *   - The self-outing "You are powered by the model named ..." line that
  *     opencode's environment() builder appends (strongest third-party tell —
@@ -47,9 +50,27 @@ const OPENCODE_OBJECTIVITY_BRAND =
 /** Any residual bare "OpenCode"/"opencode" tokens in preserved prose */
 const OPENCODE_BRAND_TOKEN = /\bOpenCode\b/g
 
-/** OhMyOpenCode Sisyphus identity line */
+/**
+ * OhMyOpenCode Sisyphus identity line. OMO 4.x variants differ per model
+ * route: the default persona quotes the name (`You are "Sisyphus" ...`) while
+ * Claude-routed prompts bold it (`You are **Sisyphus** ...`), and some
+ * variants put "OhMyOpenCode" mid-sentence rather than sentence-final.
+ * Global, because the line now appears both inside <agent-identity> and in
+ * <Role>.
+ */
 const OMO_IDENTITY_LINE =
-  /You are "Sisyphus"[^\n]*from OhMyOpenCode\.[^\n]*\n+/
+  /You are ("|\*\*)Sisyphus("|\*\*)[^\n]*OhMyOpenCode[^\n]*\n+/g
+
+/**
+ * OMO 4.x <agent-identity> wrapper block ("Your designated identity for this
+ * session ... always identify as Sisyphus ..."), injected by
+ * buildAgentIdentitySection ahead of every Sisyphus variant. Strongest OMO
+ * fingerprint — removed wholesale like <omo-env>.
+ */
+const OMO_AGENT_IDENTITY_BLOCK = /<agent-identity>[\s\S]*?<\/agent-identity>\n*/g
+
+/** Residual bare "OhMyOpenCode" tokens in preserved prose */
+const OMO_BRAND_TOKEN = /\bOhMyOpenCode\b/g
 
 /** The <omo-env>...</omo-env> block */
 const OMO_ENV_BLOCK = /<omo-env>[\s\S]*?<\/omo-env>\n*/
@@ -85,11 +106,13 @@ export function scrubOpencodeFingerprints(systemPrompt: string): string {
     .replace(OPENCODE_FEEDBACK_BLOCK, "")
     .replace(OPENCODE_DOCS_PARAGRAPH, "")
     .replace(OPENCODE_OBJECTIVITY_BRAND, GENERIC_OBJECTIVITY)
+    .replace(OMO_AGENT_IDENTITY_BLOCK, "")
     .replace(OMO_IDENTITY_LINE, "")
     .replace(OMO_ENV_BLOCK, "")
     .replace(POWERED_BY_LINE, "")
     .replace(OPENCODE_ENV_BLOCK, "\n")
     .replace(OPENCODE_BRAND_TOKEN, "the assistant")
+    .replace(OMO_BRAND_TOKEN, "the assistant")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/\s+$/, "")
 }
