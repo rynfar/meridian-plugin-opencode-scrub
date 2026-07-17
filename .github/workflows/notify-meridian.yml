@@ -11,6 +11,8 @@ name: Notify meridian of plugin update
 on:
   push:
     branches: [main]
+  # Manual trigger for validating the token wiring without a dummy commit
+  workflow_dispatch:
 
 jobs:
   dispatch:
