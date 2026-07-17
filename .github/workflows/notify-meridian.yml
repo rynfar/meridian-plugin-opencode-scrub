@@ -1,0 +1,28 @@
+name: Notify meridian of plugin update
+
+# Fires a repository_dispatch at rynfar/meridian on every push to main so
+# the flake input pin there is bumped immediately (rynfar/meridian#650)
+# instead of waiting for the daily cron.
+#
+# No-ops silently until the MERIDIAN_DISPATCH_TOKEN secret exists — a
+# fine-grained PAT (contents: read + actions/dispatch rights on
+# rynfar/meridian) minted by the repo owner.
+
+on:
+  push:
+    branches: [main]
+  # Manual trigger for validating the token wiring without a dummy commit
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fire plugin-updated dispatch
+        if: ${{ secrets.MERIDIAN_DISPATCH_TOKEN != '' }}
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MERIDIAN_DISPATCH_TOKEN }}
+          repository: rynfar/meridian
+          event-type: plugin-updated
+          client-payload: '{"plugin": "${{ github.repository }}", "sha": "${{ github.sha }}"}'
