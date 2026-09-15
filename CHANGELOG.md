@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/rynfar/meridian-plugin-opencode-scrub/compare/meridian-plugin-opencode-scrub-v0.2.0...meridian-plugin-opencode-scrub-v0.2.1) (2026-09-15)
+
+
+### Bug Fixes
+
+* OMO 4.x identity drift + robust &lt;env&gt; stripping ([#1](https://github.com/rynfar/meridian-plugin-opencode-scrub/issues/1)) ([#6](https://github.com/rynfar/meridian-plugin-opencode-scrub/issues/6)) ([59a1bfc](https://github.com/rynfar/meridian-plugin-opencode-scrub/commit/59a1bfce767d1994a4bb6a700373e4c11aef3633))
+* validate optional Meridian dispatch condition ([#12](https://github.com/rynfar/meridian-plugin-opencode-scrub/issues/12)) ([8ace4ca](https://github.com/rynfar/meridian-plugin-opencode-scrub/commit/8ace4ca10551c168dc024355d782c4cef491aac5))
+
 ## [0.2.0](https://github.com/rynfar/meridian-plugin-opencode-scrub/compare/meridian-plugin-opencode-scrub-v0.1.0...meridian-plugin-opencode-scrub-v0.2.0) (2026-04-26)
 
 
