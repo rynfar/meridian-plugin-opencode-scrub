@@ -17,9 +17,11 @@ on:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+    env:
+      MERIDIAN_DISPATCH_TOKEN: ${{ secrets.MERIDIAN_DISPATCH_TOKEN }}
     steps:
       - name: Fire plugin-updated dispatch
-        if: ${{ secrets.MERIDIAN_DISPATCH_TOKEN != '' }}
+        if: ${{ env.MERIDIAN_DISPATCH_TOKEN != '' }}
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.MERIDIAN_DISPATCH_TOKEN }}
