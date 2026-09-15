@@ -1,6 +1,6 @@
 {
   "name": "@rynfar/meridian-plugin-opencode-scrub",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Meridian plugin: strip opencode-identifying fingerprints from the system prompt before it reaches Claude.",
   "type": "module",
   "main": "./dist/index.js",
