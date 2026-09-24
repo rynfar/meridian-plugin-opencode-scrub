@@ -70,7 +70,7 @@ Verify at `http://localhost:3456/plugins` — you should see `opencode-scrub` li
 | OpenCode prompt + user CLAUDE.md additions | identity stripped, all user content preserved |
 | OpenCode environment preamble + `<env>` | duplicate preamble and redundant fields removed; bare `Working directory` retained for Meridian's cwd extraction |
 
-The plugin is scoped to `adapters: ["opencode"]`, so it has no effect on requests from pi, Crush, Droid, ForgeCode, or the passthrough adapter.
+The plugin runs for the `opencode` adapter and for `passthrough` requests that still carry an OpenCode-specific identity or runtime marker. This covers OpenCode routed through LiteLLM when its client headers are removed. Other passthrough prompts, including genuine Claude Code prompts with an `<env>` block, remain byte-for-byte unchanged.
 
 ## Rules
 
