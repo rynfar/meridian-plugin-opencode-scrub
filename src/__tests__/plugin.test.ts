@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test"
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import plugin from "../index.js"
 import type { RequestContext } from "../types.js"
+
+const packageVersion = JSON.parse(readFileSync(join(import.meta.dir, "..", "..", "package.json"), "utf8")).version
 
 const opencodePrompt = `You are powered by the model named claude-haiku-4-5. The exact model ID is anthropic/claude-haiku-4-5
 Here is some useful information about the environment you are running in:
@@ -10,6 +14,10 @@ Here is some useful information about the environment you are running in:
 </env>`
 
 describe("opencode-scrub adapter boundary", () => {
+  it("reports the shipped package version", () => {
+    expect(plugin.version).toBe(packageVersion)
+  })
+
   it("includes LiteLLM's passthrough classification and scrubs OpenCode content", () => {
     expect(plugin.adapters).toContain("passthrough")
     const ctx: RequestContext = { adapter: "passthrough", systemContext: opencodePrompt, metadata: {} }

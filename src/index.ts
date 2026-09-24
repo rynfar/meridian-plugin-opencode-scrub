@@ -7,6 +7,7 @@
  */
 
 import type { Transform, RequestContext } from "./types.js"
+import packageMetadata from "../package.json" with { type: "json" }
 import { scrubOpencodeFingerprints } from "./scrub.js"
 
 export type { Transform, RequestContext } from "./types.js"
@@ -19,7 +20,7 @@ const PASSTHROUGH_OPENCODE_MARKER =
 
 const plugin: Transform = {
   name: "opencode-scrub",
-  version: "0.1.0",
+  version: packageMetadata.version,
   description: "Strip opencode-identifying fingerprints from the system prompt before it reaches Claude",
   adapters: ["opencode", "passthrough"],
 
