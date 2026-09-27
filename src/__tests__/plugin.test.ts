@@ -47,3 +47,24 @@ describe("opencode-scrub adapter boundary", () => {
     expect(result?.systemContext).toContain("Working directory: /client/project")
   })
 })
+
+describe("opencode-scrub model boundary", () => {
+  const scrubbedWithoutModel = plugin.onRequest?.({ adapter: "opencode", systemContext: opencodePrompt, metadata: {} })
+
+  for (const model of ["opus", "opus[1m]", "sonnet", "sonnet[1m]", "haiku", "fable", "fable[1m]", "claude-opus-5-5", "anthropic/claude-sonnet-5"]) {
+    it(`scrubs requests for Claude model ${model}`, () => {
+      const ctx: RequestContext = { adapter: "opencode", model, systemContext: opencodePrompt, metadata: {} }
+      expect(plugin.onRequest?.(ctx)?.systemContext).toBe(scrubbedWithoutModel?.systemContext)
+    })
+  }
+
+  for (const adapter of ["opencode", "passthrough"]) {
+    for (const model of ["gpt-6-luna", "gpt-5.3-codex", "openai/gpt-5.5"]) {
+      it(`leaves ${adapter} requests for ${model} untouched`, () => {
+        const ctx: RequestContext = { adapter, model, systemContext: opencodePrompt, metadata: {} }
+        expect(plugin.onRequest?.(ctx)).toBe(ctx)
+        expect(ctx.systemContext).toBe(opencodePrompt)
+      })
+    }
+  }
+})

@@ -18,6 +18,11 @@ export type { Transform, RequestContext } from "./types.js"
 const PASSTHROUGH_OPENCODE_MARKER =
   /You are OpenCode, the best coding agent on the planet\.|You are powered by the model named |<omo-env>|<agent-identity>|You are (?:"|\*\*)Sisyphus(?:"|\*\*)[^\n]*OhMyOpenCode/
 
+// Meridian resolves Claude requests to an SDK alias (`opus`, `sonnet[1m]`, ...)
+// before plugins run; full `claude-*` ids cover other callers. Requests for
+// other providers (e.g. OpenAI GPT/Codex models) keep their prompt as sent.
+const CLAUDE_MODEL = /claude|^(?:opus|sonnet|haiku|fable)(?:\[1m\])?$/i
+
 const plugin: Transform = {
   name: "opencode-scrub",
   version: packageMetadata.version,
@@ -26,6 +31,7 @@ const plugin: Transform = {
 
   onRequest(ctx: RequestContext): RequestContext {
     if (!ctx.systemContext) return ctx
+    if (ctx.model !== undefined && !CLAUDE_MODEL.test(ctx.model)) return ctx
     if (ctx.adapter === "passthrough" && !PASSTHROUGH_OPENCODE_MARKER.test(ctx.systemContext)) return ctx
     const scrubbed = scrubOpencodeFingerprints(ctx.systemContext)
     if (scrubbed === ctx.systemContext) return ctx

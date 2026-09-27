@@ -69,8 +69,11 @@ Verify at `http://localhost:3456/plugins` — you should see `opencode-scrub` li
 | OhMyOpenCode/Sisyphus prompt | OMO identity line removed, `<omo-env>` block removed, "You are powered by..." line removed; persona rules preserved |
 | OpenCode prompt + user CLAUDE.md additions | identity stripped, all user content preserved |
 | OpenCode environment preamble + `<env>` | duplicate preamble and redundant fields removed; bare `Working directory` retained for Meridian's cwd extraction |
+| Request for a non-Claude model (e.g. `gpt-5.3-codex`) | unchanged |
 
 The plugin runs for the `opencode` adapter and for `passthrough` requests that still carry an OpenCode-specific identity or runtime marker. This covers OpenCode routed through LiteLLM when its client headers are removed. Other passthrough prompts, including genuine Claude Code prompts with an `<env>` block, remain byte-for-byte unchanged.
+
+Only requests that target a Claude model are scrubbed: Meridian's resolved aliases (`opus`, `sonnet`, `haiku`, `fable`, optionally with `[1m]`) and any model id containing `claude`. When Meridian serves another provider, such as OpenAI GPT/Codex models, the OpenCode prompt reaches that provider exactly as the client sent it.
 
 ## Rules
 
