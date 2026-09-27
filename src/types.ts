@@ -15,6 +15,8 @@
 export interface RequestContext {
   /** Agent adapter name (readonly from meridian's perspective) */
   readonly adapter: string
+  /** Model the request targets, as resolved by meridian */
+  model?: string
   /** Client-provided system prompt / context string, if any */
   systemContext?: string
   /** Plugin-to-plugin state bag */
