@@ -18,6 +18,16 @@ export type { Transform, RequestContext } from "./types.js"
 const PASSTHROUGH_OPENCODE_MARKER =
   /You are OpenCode, the best coding agent on the planet\.|You are powered by the model named |<omo-env>|<agent-identity>|You are (?:"|\*\*)Sisyphus(?:"|\*\*)[^\n]*OhMyOpenCode/
 
+function getScrubMode(): "aggressive" | "minimal" {
+  const env = (globalThis as typeof globalThis & {
+    process?: { env?: Record<string, string | undefined> }
+  }).process?.env
+
+  return env?.MERIDIAN_OPENCODE_SCRUB_MODE === "minimal"
+    ? "minimal"
+    : "aggressive"
+}
+
 const plugin: Transform = {
   name: "opencode-scrub",
   version: packageMetadata.version,
@@ -27,7 +37,7 @@ const plugin: Transform = {
   onRequest(ctx: RequestContext): RequestContext {
     if (!ctx.systemContext) return ctx
     if (ctx.adapter === "passthrough" && !PASSTHROUGH_OPENCODE_MARKER.test(ctx.systemContext)) return ctx
-    const scrubbed = scrubOpencodeFingerprints(ctx.systemContext)
+    const scrubbed = scrubOpencodeFingerprints(ctx.systemContext, getScrubMode())
     if (scrubbed === ctx.systemContext) return ctx
     return { ...ctx, systemContext: scrubbed }
   },

@@ -19,6 +19,24 @@ The scrub also handles [OhMyOpenCode](https://github.com/anomalyco/ohmyopencode)
 
 The scrub is **idempotent** — running it twice on the same string is a no-op.
 
+## Modes
+
+The default `aggressive` mode retains current scrubbing. Set
+`MERIDIAN_OPENCODE_SCRUB_MODE=minimal` for surgical removal without inserting a
+generic identity or replacing residual OpenCode/OhMyOpenCode words in preserved
+prose. Both modes remove known identity wrappers, feedback/docs fingerprints,
+powered-by lines and duplicate runtime environment blocks. Both retain the
+client working-directory field, project instructions and tool/persona policies,
+and normalize leftover blank lines. Minimal mode still removes the duplicate
+environment preamble; preserving it would defeat the metering fix.
+
+```sh
+MERIDIAN_OPENCODE_SCRUB_MODE=minimal meridian
+```
+
+Other or unset values select `aggressive`. Adapter and passthrough marker guards
+apply in both modes; genuine Claude Code prompts stay unchanged.
+
 ## Install
 
 ### Option 1: npm (recommended)
@@ -102,3 +120,10 @@ The built plugin is a single ES module at `dist/index.js` with `dist/index.d.ts`
 ## License
 
 MIT
+
+## Manual live verification
+
+[Minimal/aggressive headless evidence and reproduction](https://github.com/rynfar/meridian-plugin-opencode-scrub/blob/main/docs/evidence/5-minimal-mode.md)
+uses actual OpenCode, an independently installed tarball, Claude tool-result
+receipts and same-session continuation. This manual credentialed gate is separate
+from the ordinary unit/build CI and does not publish a package.

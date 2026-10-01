@@ -29,6 +29,8 @@
  * librarian, Oracle), and any user CLAUDE.md content appended by opencode.
  */
 
+export type ScrubMode = "aggressive" | "minimal"
+
 /** Vanilla L1 identity line from anthropic.txt */
 const OPENCODE_IDENTITY_LINE =
   /You are OpenCode, the best coding agent on the planet\.[^\n]*\n+/
@@ -104,10 +106,10 @@ const GENERIC_IDENTITY =
 const GENERIC_OBJECTIVITY =
   "It is best for the user if the assistant honestly applies"
 
-export function scrubOpencodeFingerprints(systemPrompt: string): string {
+export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode = "aggressive"): string {
   if (!systemPrompt) return systemPrompt
-  return systemPrompt
-    .replace(OPENCODE_IDENTITY_LINE, GENERIC_IDENTITY)
+  const scrubbed = systemPrompt
+    .replace(OPENCODE_IDENTITY_LINE, mode === "minimal" ? "" : GENERIC_IDENTITY)
     .replace(OPENCODE_FEEDBACK_BLOCK, "")
     .replace(OPENCODE_DOCS_PARAGRAPH, "")
     .replace(OPENCODE_OBJECTIVITY_BRAND, GENERIC_OBJECTIVITY)
@@ -116,8 +118,12 @@ export function scrubOpencodeFingerprints(systemPrompt: string): string {
     .replace(OMO_ENV_BLOCK, "")
     .replace(POWERED_BY_LINE, "")
     .replace(OPENCODE_ENV_BLOCK, keepClientCwd)
+
+  // Both modes remove duplicate runtime fingerprints and retain client cwd.
+  // Minimal avoids inserting an identity and rewriting residual prose.
+  return (mode === "minimal" ? scrubbed : scrubbed
     .replace(OPENCODE_BRAND_TOKEN, "the assistant")
-    .replace(OMO_BRAND_TOKEN, "the assistant")
+    .replace(OMO_BRAND_TOKEN, "the assistant"))
     .replace(/\n{3,}/g, "\n\n")
     .replace(/\s+$/, "")
 }
