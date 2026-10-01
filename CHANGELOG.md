@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/rynfar/meridian-plugin-opencode-scrub/compare/meridian-plugin-opencode-scrub-v0.2.3...meridian-plugin-opencode-scrub-v0.3.0) (2026-10-01)
+
+
+### Features
+
+* add minimal scrub mode with environment deduplication ([#19](https://github.com/rynfar/meridian-plugin-opencode-scrub/issues/19)) ([77316d2](https://github.com/rynfar/meridian-plugin-opencode-scrub/commit/77316d2ba4ed77ef3d5f12e40256ba1c3699d85a))
+
 ## [0.2.3](https://github.com/rynfar/meridian-plugin-opencode-scrub/compare/meridian-plugin-opencode-scrub-v0.2.2...meridian-plugin-opencode-scrub-v0.2.3) (2026-09-24)
 
 
