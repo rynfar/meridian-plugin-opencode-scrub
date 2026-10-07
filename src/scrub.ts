@@ -96,7 +96,9 @@ const OPENCODE_ENV_BLOCK =
   /\n?Here is some useful information about the environment you are running in:\n<env>[\s\S]*?<\/env>\n?/
 
 function keepClientCwd(block: string): string {
-  const cwd = block.match(/(?:^|\n)[ \t]*Working directory:[ \t]*([^\n<]+)/i)?.[1]?.trim()
+  // Also match Claude Code's "Primary working directory:" form so the kept <env>
+  // block never loses the client cwd (Meridian and the model both read it).
+  const cwd = block.match(/(?:^|\n)[ \t]*(?:Primary[ \t]+)?Working[ \t]+directory:[ \t]*([^\n<]+)/i)?.[1]?.trim()
   return cwd ? `\n<env>\n  Working directory: ${cwd}\n</env>\n` : "\n"
 }
 
