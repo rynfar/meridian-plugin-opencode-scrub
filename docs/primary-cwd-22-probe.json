@@ -1,0 +1,60 @@
+{
+  "result": "FAIL",
+  "failure": "Actual client failed; inspect private stderr\n\nnull !== 0\n",
+  "root": "<private-owned-fixture>",
+  "mode": "aggressive",
+  "model": "claude-haiku-4-5",
+  "versions": {
+    "opencode": "1.18.34",
+    "meridian": "1.80.0",
+    "sdk": "0.2.141"
+  },
+  "childExit": null,
+  "childSignal": "SIGTERM",
+  "clientCloseJoined": true,
+  "relayClosed": true,
+  "activeHandlers": 0,
+  "sockets": 0,
+  "before": [
+    {
+      "adapter": "opencode",
+      "injected": true,
+      "hasClientCwd": true,
+      "hasPrimary": true
+    }
+  ],
+  "after": [
+    {
+      "adapter": "opencode",
+      "hasClientCwd": false,
+      "hasWorkingDirectory": false,
+      "fingerprint": false
+    }
+  ],
+  "queries": [
+    {
+      "hasClientCwd": false,
+      "accountMatched": true,
+      "models": [
+        "<synthetic>"
+      ],
+      "result": true,
+      "error": true,
+      "iteratorJoined": true
+    }
+  ],
+  "wire": [
+    {
+      "route": "/messages",
+      "session": true,
+      "openCodeAgent": false,
+      "signedTurn": true
+    }
+  ],
+  "platform": "darwin",
+  "arch": "arm64",
+  "acceptance": "blocked: no successful real-provider completion",
+  "meridianSha": "6e510dbcb7713997e0299a7f954ee73bb45ceae7",
+  "scrubBaseline": "77316d2",
+  "probeForm": "injected Primary context path, distinct from SDK cwd"
+}
