@@ -87,6 +87,7 @@ for (const mode of ["aggressive", "minimal"] as const) {
         const source = `Keep tool policy.\n${bare}\nResidual OpenCode prose.`
         const out = scrubOpencodeFingerprints(source, mode)
         expect(out).toContain(cwd)
+        expect(out).toContain(`<env>\n  Working directory: ${cwd}\n</env>`)
         expect(out).toContain("Keep tool policy.")
         expect(scrubOpencodeFingerprints(out, mode)).toBe(out)
       }

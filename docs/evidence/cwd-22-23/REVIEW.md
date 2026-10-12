@@ -40,3 +40,38 @@ commit a reproducible actual-client cwd/tool/continuation harness, qualify both
 client and server scrub plugins, independently installed package, affected
 platform/client/model and final-head CI. Do not close #21/#22/#23 or publish until
 those applicable gates are established. No credentials or model calls were used.
+
+
+## Installed package/parser integration found and corrected another defect
+
+The new committed `scripts/e2e-cwd-package.mjs` loads the independently installed
+plugin through Meridian's actual loader/transform runner and checks output with
+its production cwd extractor and conversation fingerprint. It asserts active
+identity before requests, 98 successful hook invocations and zero errors after,
+plus unchanged genuine unmarked passthrough traffic. It requires no credentials,
+client process or model. Windows paths here are string fixtures, not Windows E2E.
+
+The c3ec923 package failed six of 48 cases: bare `Working\tdirectory` survived
+prose rules, but Meridian's parser requires the canonical space-separated label.
+The separate correction canonicalizes every protected block's label while
+preserving its path. The independently repacked/reinstalled correction passes all
+48 cases, including stable history identity, repeated scrubbing and instructions.
+All 57 unit tests still pass (637 assertions), and build/pack pass. The published
+0.2.3 package fails all 48 cases; its older implementation does not implement the
+current source's mode behavior, so those mode labels describe requested env,
+not proof the registry package supports minimal mode.
+
+Reports hash both index.js and scrub.js: entrypoint identity alone does not
+identify a changed imported implementation. Adjacent package integrity records
+identify the separately installed intermediate and corrected tarballs. Exact
+reproduction (Bun, a built Meridian checkout containing mandatory scrub preflight):
+
+```sh
+E2E_MERIDIAN_ROOT=/absolute/meridian \
+E2E_PLUGIN_PATH=/absolute/independent/install/dist/index.js \
+E2E_REPORT=/absolute/owned/report.json bun scripts/e2e-cwd-package.mjs
+```
+
+This completes the installed-plugin/parser boundary gate only. Actual native
+Windows/client tool execution and live SDK/model/continuation remain unverified;
+no merge, source closure or release is claimed.

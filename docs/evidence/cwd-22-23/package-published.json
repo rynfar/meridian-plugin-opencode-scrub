@@ -1,0 +1,514 @@
+{
+  "scope": "credentialless installed plugin and Meridian parser; no client/model/platform acceptance",
+  "modelCalls": 0,
+  "installation": {
+    "path": "/private/tmp/meridian-scrub-preflight-package-20261012/node_modules/@rynfar/meridian-plugin-opencode-scrub/dist/index.js",
+    "packageName": "@rynfar/meridian-plugin-opencode-scrub",
+    "packageVersion": "0.2.3",
+    "sha256": "4ab89412e6a59fad812a3f6e5500c84f3bdfc41863320bc794f5274a251da656"
+  },
+  "harnessSha256": "f42edf72d83278a7589b1b3f6e4e8b41001847a45870d9115f91fd3195a4aaa0",
+  "cases": [
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Primary working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Primary working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "primary WORKING DIRECTORY",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "primary WORKING DIRECTORY",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working\tdirectory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working\tdirectory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Primary working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Primary working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "primary WORKING DIRECTORY",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "primary WORKING DIRECTORY",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working\tdirectory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working\tdirectory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Primary working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Primary working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "primary WORKING DIRECTORY",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "primary WORKING DIRECTORY",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working\tdirectory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "minimal",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working\tdirectory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Primary working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Primary working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "primary WORKING DIRECTORY",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "primary WORKING DIRECTORY",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working\tdirectory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "C:\\work\\OpenCode",
+      "label": "Working\tdirectory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Primary working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Primary working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "primary WORKING DIRECTORY",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "primary WORKING DIRECTORY",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working\tdirectory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/OhMyOpenCode project",
+      "label": "Working\tdirectory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Primary working directory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Primary working directory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "primary WORKING DIRECTORY",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "primary WORKING DIRECTORY",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working\tdirectory",
+      "bare": false,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    },
+    {
+      "mode": "aggressive",
+      "cwd": "/tmp/You are powered by the model named Demo",
+      "label": "Working\tdirectory",
+      "bare": true,
+      "pathPreserved": false,
+      "historyIdentityPreserved": false,
+      "idempotent": true,
+      "policyPreserved": true
+    }
+  ],
+  "implementationSha256": "100ef80bb1874d38376501c379166e105e0dc90eb720436bd4588f55832b89f8",
+  "loaded": {
+    "path": "/private/tmp/meridian-scrub-preflight-package-20261012/node_modules/@rynfar/meridian-plugin-opencode-scrub/dist/index.js",
+    "packageName": "@rynfar/meridian-plugin-opencode-scrub",
+    "packageVersion": "0.2.3",
+    "sha256": "4ab89412e6a59fad812a3f6e5500c84f3bdfc41863320bc794f5274a251da656",
+    "runtimeVersion": "0.2.3",
+    "invocations": 0,
+    "errors": 0
+  },
+  "invoked": {
+    "path": "/private/tmp/meridian-scrub-preflight-package-20261012/node_modules/@rynfar/meridian-plugin-opencode-scrub/dist/index.js",
+    "packageName": "@rynfar/meridian-plugin-opencode-scrub",
+    "packageVersion": "0.2.3",
+    "sha256": "4ab89412e6a59fad812a3f6e5500c84f3bdfc41863320bc794f5274a251da656",
+    "runtimeVersion": "0.2.3",
+    "invocations": 98,
+    "errors": 0
+  },
+  "failed": 48,
+  "result": "FAIL"
+}

@@ -150,9 +150,9 @@ export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode 
     const cwd = clientCwd(match[0])
     if (!cwd) continue
     parts.push(scrubProse(systemPrompt.slice(cursor, match.index), mode))
-    parts.push(match[0].startsWith("<env>")
-      ? match[0]
-      : `<env>\n  Working directory: ${cwd}\n</env>`)
+    // Meridian's cwd parser expects the canonical label, including its space.
+    // Normalize bare variants too; preserving a tabbed label loses metadata.
+    parts.push(`<env>\n  Working directory: ${cwd}\n</env>`)
     cursor = match.index + match[0].length
   }
   parts.push(scrubProse(systemPrompt.slice(cursor), mode))
