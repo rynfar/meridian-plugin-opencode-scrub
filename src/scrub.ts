@@ -101,8 +101,8 @@ const OPENCODE_ENV_BLOCK = new RegExp(
 // Match the generated block and the bare cwd block retained by an earlier
 // scrub. Surrounding newlines stay in the prose so its line rules still match.
 const CLIENT_CWD_ENV_BLOCK = new RegExp(
-  `${OPENCODE_ENV_PREAMBLE}\\r?\\n<env>[\\s\\S]*?<\\/env>|<env>\\r?\\n[ \\t]*Working directory:[^\\r\\n<]+\\r?\\n<\\/env>`,
-  "g",
+  `${OPENCODE_ENV_PREAMBLE}\\r?\\n<env>[\\s\\S]*?<\\/env>|<env>\\r?\\n[ \\t]*(?:Primary[ \\t]+)?Working[ \\t]+directory:[^\\r\\n<]+\\r?\\n<\\/env>`,
+  "gi",
 )
 
 function clientCwd(block: string): string | undefined {
