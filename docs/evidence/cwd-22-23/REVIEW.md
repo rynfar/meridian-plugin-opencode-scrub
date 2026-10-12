@@ -56,7 +56,7 @@ prose rules, but Meridian's parser requires the canonical space-separated label.
 The separate correction canonicalizes every protected block's label while
 preserving its path. The independently repacked/reinstalled correction passes all
 48 cases, including stable history identity, repeated scrubbing and instructions.
-All 57 unit tests still pass (637 assertions), and build/pack pass. The published
+All 57 unit tests still pass (625 assertions), and build/pack pass. The published
 0.2.3 package fails all 48 cases; its older implementation does not implement the
 current source's mode behavior, so those mode labels describe requested env,
 not proof the registry package supports minimal mode.
