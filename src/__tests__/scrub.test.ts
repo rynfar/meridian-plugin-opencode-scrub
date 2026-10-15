@@ -142,3 +142,25 @@ describe("scrubOpencodeFingerprints — pass-through", () => {
     expect(scrubOpencodeFingerprints("")).toBe("")
   })
 })
+
+
+describe("keepClientCwd env forms (issue #21)", () => {
+  const ENV_BLOCK = (line: string) =>
+    "Here is some useful information about the environment you are running in:\n<env>\n" + line + "\nIs directory a git repo: Yes\n</env>\n"
+
+  test("preserves Primary working directory (Claude Code form)", () => {
+    const out = scrubOpencodeFingerprints("You are OpenCode, the best coding agent on the planet.\n" + ENV_BLOCK("Primary working directory: C:\\proj\\alpha"))
+    expect(out).toContain("C:\\proj\\alpha")
+    expect(out).not.toContain("best coding agent")
+  })
+
+  test("preserves legacy Working directory form", () => {
+    const out = scrubOpencodeFingerprints(ENV_BLOCK("Working directory: /home/user/legacy"))
+    expect(out).toContain("/home/user/legacy")
+  })
+
+  test("preserves uppercase/mixed-case label", () => {
+    const out = scrubOpencodeFingerprints(ENV_BLOCK("Primary Working Directory: D:\\Mixed"))
+    expect(out).toContain("D:\\Mixed")
+  })
+})
