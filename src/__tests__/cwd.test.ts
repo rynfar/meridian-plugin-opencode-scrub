@@ -78,3 +78,19 @@ for (const mode of ["aggressive", "minimal"] as const satisfies readonly ScrubMo
     })
   })
 }
+
+for (const mode of ["aggressive", "minimal"] as const) {
+  test(`protects Primary and case-varied cwd metadata before prose rules (${mode})`, () => {
+    for (const label of ["Primary working directory", "primary WORKING DIRECTORY", "Working\tdirectory"]) {
+      for (const cwd of ["C:\\work\\OpenCode", "/tmp/You are powered by the model named Demo"]) {
+        const bare = `<env>\n  ${label}: ${cwd}\n</env>`
+        const source = `Keep tool policy.\n${bare}\nResidual OpenCode prose.`
+        const out = scrubOpencodeFingerprints(source, mode)
+        expect(out).toContain(cwd)
+        expect(out).toContain(`<env>\n  Working directory: ${cwd}\n</env>`)
+        expect(out).toContain("Keep tool policy.")
+        expect(scrubOpencodeFingerprints(out, mode)).toBe(out)
+      }
+    }
+  })
+}

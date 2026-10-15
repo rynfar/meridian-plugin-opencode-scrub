@@ -101,12 +101,13 @@ const OPENCODE_ENV_BLOCK = new RegExp(
 // Match the generated block and the bare cwd block retained by an earlier
 // scrub. Surrounding newlines stay in the prose so its line rules still match.
 const CLIENT_CWD_ENV_BLOCK = new RegExp(
-  `${OPENCODE_ENV_PREAMBLE}\\r?\\n<env>[\\s\\S]*?<\\/env>|<env>\\r?\\n[ \\t]*Working directory:[^\\r\\n<]+\\r?\\n<\\/env>`,
-  "g",
+  `${OPENCODE_ENV_PREAMBLE}\\r?\\n<env>[\\s\\S]*?<\\/env>|<env>\\r?\\n[ \\t]*(?:Primary[ \\t]+)?Working[ \\t]+directory:[^\\r\\n<]+\\r?\\n<\\/env>`,
+  "gi",
 )
 
 function clientCwd(block: string): string | undefined {
-  return block.match(/(?:^|\n)[ \t]*Working directory:[ \t]*([^\n<]+)/i)?.[1]?.trim()
+  // Preserve the optional Primary label from #22 when extracting protected metadata.
+  return block.match(/(?:^|\n)[ \t]*(?:Primary[ \t]+)?Working[ \t]+directory:[ \t]*([^\n<]+)/i)?.[1]?.trim()
 }
 
 function keepClientCwd(block: string): string {
@@ -149,9 +150,9 @@ export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode 
     const cwd = clientCwd(match[0])
     if (!cwd) continue
     parts.push(scrubProse(systemPrompt.slice(cursor, match.index), mode))
-    parts.push(match[0].startsWith("<env>")
-      ? match[0]
-      : `<env>\n  Working directory: ${cwd}\n</env>`)
+    // Meridian's cwd parser expects the canonical label, including its space.
+    // Normalize bare variants too; preserving a tabbed label loses metadata.
+    parts.push(`<env>\n  Working directory: ${cwd}\n</env>`)
     cursor = match.index + match[0].length
   }
   parts.push(scrubProse(systemPrompt.slice(cursor), mode))
