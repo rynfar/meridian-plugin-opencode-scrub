@@ -92,13 +92,26 @@ const POWERED_BY_LINE =
  * duplicate preamble: Meridian reads this field from the incoming prompt when
  * the scrub function is used client-side, before Meridian receives the body.
  */
-const OPENCODE_ENV_BLOCK =
-  /\n?Here is some useful information about the environment you are running in:\n<env>[\s\S]*?<\/env>\n?/
+const OPENCODE_ENV_PREAMBLE =
+  "Here is some useful information about the environment you are running in:"
+const OPENCODE_ENV_BLOCK = new RegExp(
+  `(?:\\r?\\n)?${OPENCODE_ENV_PREAMBLE}\\r?\\n<env>[\\s\\S]*?<\\/env>(?:\\r?\\n)?`,
+)
+
+// Match the generated block and the bare cwd block retained by an earlier
+// scrub. Surrounding newlines stay in the prose so its line rules still match.
+const CLIENT_CWD_ENV_BLOCK = new RegExp(
+  `${OPENCODE_ENV_PREAMBLE}\\r?\\n<env>[\\s\\S]*?<\\/env>|<env>\\r?\\n[ \\t]*(?:Primary[ \\t]+)?Working[ \\t]+directory:[^\\r\\n<]+\\r?\\n<\\/env>`,
+  "gi",
+)
+
+function clientCwd(block: string): string | undefined {
+  // Preserve the optional Primary label from #22 when extracting protected metadata.
+  return block.match(/(?:^|\n)[ \t]*(?:Primary[ \t]+)?Working[ \t]+directory:[ \t]*([^\n<]+)/i)?.[1]?.trim()
+}
 
 function keepClientCwd(block: string): string {
-  // Also match Claude Code's "Primary working directory:" form so the kept <env>
-  // block never loses the client cwd (Meridian and the model both read it).
-  const cwd = block.match(/(?:^|\n)[ \t]*(?:Primary[ \t]+)?Working[ \t]+directory:[ \t]*([^\n<]+)/i)?.[1]?.trim()
+  const cwd = clientCwd(block)
   return cwd ? `\n<env>\n  Working directory: ${cwd}\n</env>\n` : "\n"
 }
 
@@ -108,8 +121,7 @@ const GENERIC_IDENTITY =
 const GENERIC_OBJECTIVITY =
   "It is best for the user if the assistant honestly applies"
 
-export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode = "aggressive"): string {
-  if (!systemPrompt) return systemPrompt
+function scrubProse(systemPrompt: string, mode: ScrubMode): string {
   const scrubbed = systemPrompt
     .replace(OPENCODE_IDENTITY_LINE, mode === "minimal" ? "" : GENERIC_IDENTITY)
     .replace(OPENCODE_FEEDBACK_BLOCK, "")
@@ -121,11 +133,31 @@ export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode 
     .replace(POWERED_BY_LINE, "")
     .replace(OPENCODE_ENV_BLOCK, keepClientCwd)
 
-  // Both modes remove duplicate runtime fingerprints and retain client cwd.
   // Minimal avoids inserting an identity and rewriting residual prose.
-  return (mode === "minimal" ? scrubbed : scrubbed
+  return mode === "minimal" ? scrubbed : scrubbed
     .replace(OPENCODE_BRAND_TOKEN, "the assistant")
-    .replace(OMO_BRAND_TOKEN, "the assistant"))
+    .replace(OMO_BRAND_TOKEN, "the assistant")
+}
+
+export function scrubOpencodeFingerprints(systemPrompt: string, mode: ScrubMode = "aggressive"): string {
+  if (!systemPrompt) return systemPrompt
+
+  // Paths are client metadata, not fingerprint prose. Separate them before
+  // every rule, including identity rules that can consume part of a path.
+  const parts: string[] = []
+  let cursor = 0
+  for (const match of systemPrompt.matchAll(CLIENT_CWD_ENV_BLOCK)) {
+    const cwd = clientCwd(match[0])
+    if (!cwd) continue
+    parts.push(scrubProse(systemPrompt.slice(cursor, match.index), mode))
+    // Meridian's cwd parser expects the canonical label, including its space.
+    // Normalize bare variants too; preserving a tabbed label loses metadata.
+    parts.push(`<env>\n  Working directory: ${cwd}\n</env>`)
+    cursor = match.index + match[0].length
+  }
+  parts.push(scrubProse(systemPrompt.slice(cursor), mode))
+
+  return parts.join("")
     .replace(/\n{3,}/g, "\n\n")
     .replace(/\s+$/, "")
 }
