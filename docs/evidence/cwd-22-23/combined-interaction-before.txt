@@ -1,0 +1,105 @@
+
+> @rynfar/meridian-plugin-opencode-scrub@0.2.3 test
+> bun test
+
+bun test v1.3.14 (0d9b296a)
+
+src/__tests__/minimal.test.ts:
+(pass) minimal removes the duplicate preamble while retaining cwd and project prose [5.55ms]
+(pass) minimal retains OMO policies while removing all identity and runtime wrappers [2.04ms]
+(pass) default and explicit aggressive mode retain the same result [0.12ms]
+(pass) the environment mode applies at each request and unknown values remain aggressive [0.12ms]
+(pass) minimal preserves genuine Claude passthrough context byte-for-byte [0.08ms]
+(pass) minimal still scrubs headerless OpenCode traffic [0.04ms]
+
+src/__tests__/plugin.test.ts:
+(pass) opencode-scrub adapter boundary > reports the shipped package version [0.04ms]
+(pass) opencode-scrub adapter boundary > includes LiteLLM's passthrough classification and scrubs OpenCode content [0.08ms]
+(pass) opencode-scrub adapter boundary > preserves genuine Claude Code passthrough prompts byte-for-byte [0.02ms]
+(pass) opencode-scrub adapter boundary > preserves incidental OpenCode mentions in other passthrough prompts [0.01ms]
+(pass) opencode-scrub adapter boundary > keeps the existing direct OpenCode adapter behavior [0.02ms]
+
+src/__tests__/scrub.test.ts:
+(pass) scrubOpencodeFingerprints — vanilla anthropic.txt > replaces the identity line with the generic one [0.12ms]
+(pass) scrubOpencodeFingerprints — vanilla anthropic.txt > removes the feedback block and docs paragraph [0.07ms]
+(pass) scrubOpencodeFingerprints — vanilla anthropic.txt > neutralizes the objectivity brand sentence and residual brand tokens [0.46ms]
+(pass) scrubOpencodeFingerprints — vanilla anthropic.txt > is idempotent [0.26ms]
+(pass) scrubOpencodeFingerprints — OMO 4.x Sisyphus (issue #1 drift) > removes the <agent-identity> block entirely [0.09ms]
+(pass) scrubOpencodeFingerprints — OMO 4.x Sisyphus (issue #1 drift) > removes the bold **Sisyphus** identity line used by Claude-routed variants [0.03ms]
+(pass) scrubOpencodeFingerprints — OMO 4.x Sisyphus (issue #1 drift) > leaves no OhMyOpenCode brand token behind [0.02ms]
+(pass) scrubOpencodeFingerprints — OMO 4.x Sisyphus (issue #1 drift) > removes <omo-env> and the powered-by line [0.02ms]
+(pass) scrubOpencodeFingerprints — OMO 4.x Sisyphus (issue #1 drift) > preserves the persona/orchestration rules [0.02ms]
+(pass) scrubOpencodeFingerprints — OMO 4.x Sisyphus (issue #1 drift) > is idempotent on the OMO prompt [0.02ms]
+(pass) scrubOpencodeFingerprints — duplicate <env> block (metering trigger) > keeps only the client cwd when the duplicate env block ends the string [0.10ms]
+(pass) scrubOpencodeFingerprints — duplicate <env> block (metering trigger) > preserves the client cwd when content follows the duplicate env block [0.09ms]
+(pass) scrubOpencodeFingerprints — duplicate <env> block (metering trigger) > removes the duplicate env entirely when it has no working directory [0.06ms]
+(pass) scrubOpencodeFingerprints — duplicate <env> block (metering trigger) > preserves a Windows client path for Meridian's cwd extractor [0.35ms]
+(pass) scrubOpencodeFingerprints — duplicate <env> block (metering trigger) > is idempotent on the env append [0.14ms]
+(pass) scrubOpencodeFingerprints — pass-through > no-op on a prompt without opencode/OMO fingerprints [0.08ms]
+(pass) scrubOpencodeFingerprints — pass-through > no-op on empty input [0.03ms]
+(pass) keepClientCwd env forms (issue #21) > preserves Primary working directory (Claude Code form) [0.08ms]
+(pass) keepClientCwd env forms (issue #21) > preserves legacy Working directory form [0.03ms]
+(pass) keepClientCwd env forms (issue #21) > preserves uppercase/mixed-case label [0.01ms]
+
+src/__tests__/cwd.test.ts:
+(pass) client cwd metadata (aggressive) > preserves C:\work\OpenCode through every fingerprint rule and a second scrub [0.41ms]
+(pass) client cwd metadata (aggressive) > preserves D:\work\OhMyOpenCode project through every fingerprint rule and a second scrub [0.20ms]
+(pass) client cwd metadata (aggressive) > preserves C:\work\openCode mixed CASE through every fingerprint rule and a second scrub [0.06ms]
+(pass) client cwd metadata (aggressive) > preserves /tmp/OpenCode through every fingerprint rule and a second scrub [0.05ms]
+(pass) client cwd metadata (aggressive) > preserves /tmp/OhMyOpenCode/second project through every fingerprint rule and a second scrub [0.08ms]
+(pass) client cwd metadata (aggressive) > preserves /tmp/You are powered by the model named Demo through every fingerprint rule and a second scrub [0.10ms]
+(pass) client cwd metadata (aggressive) > preserves /tmp/You are OpenCode, the best coding agent on the planet. through every fingerprint rule and a second scrub [0.03ms]
+(pass) client cwd metadata (aggressive) > preserves /tmp/It is best for the user if OpenCode honestly applies through every fingerprint rule and a second scrub [0.03ms]
+(pass) client cwd metadata (aggressive) > preserves /tmp/When the user directly asks about OpenCode/opencode.ai/docs through every fingerprint rule and a second scrub [0.02ms]
+(pass) client cwd metadata (aggressive) > preserves /tmp/If the user asks for help or wants to give feedback/github.com/anomalyco/opencode through every fingerprint rule and a second scrub [0.03ms]
+(pass) client cwd metadata (aggressive) > protects canonical cwd metadata without the original preamble [0.11ms]
+(pass) client cwd metadata (aggressive) > does not leak cwd between independent project requests [0.05ms]
+(pass) client cwd metadata (minimal) > preserves C:\work\OpenCode through every fingerprint rule and a second scrub [0.03ms]
+(pass) client cwd metadata (minimal) > preserves D:\work\OhMyOpenCode project through every fingerprint rule and a second scrub [1.46ms]
+(pass) client cwd metadata (minimal) > preserves C:\work\openCode mixed CASE through every fingerprint rule and a second scrub [0.03ms]
+(pass) client cwd metadata (minimal) > preserves /tmp/OpenCode through every fingerprint rule and a second scrub [0.04ms]
+(pass) client cwd metadata (minimal) > preserves /tmp/OhMyOpenCode/second project through every fingerprint rule and a second scrub [0.02ms]
+(pass) client cwd metadata (minimal) > preserves /tmp/You are powered by the model named Demo through every fingerprint rule and a second scrub [0.03ms]
+(pass) client cwd metadata (minimal) > preserves /tmp/You are OpenCode, the best coding agent on the planet. through every fingerprint rule and a second scrub [0.02ms]
+(pass) client cwd metadata (minimal) > preserves /tmp/It is best for the user if OpenCode honestly applies through every fingerprint rule and a second scrub [0.02ms]
+(pass) client cwd metadata (minimal) > preserves /tmp/When the user directly asks about OpenCode/opencode.ai/docs through every fingerprint rule and a second scrub [0.06ms]
+(pass) client cwd metadata (minimal) > preserves /tmp/If the user asks for help or wants to give feedback/github.com/anomalyco/opencode through every fingerprint rule and a second scrub [0.03ms]
+(pass) client cwd metadata (minimal) > protects canonical cwd metadata without the original preamble [0.03ms]
+(pass) client cwd metadata (minimal) > does not leak cwd between independent project requests [0.01ms]
+84 |     for (const label of ["Primary working directory", "primary WORKING DIRECTORY", "Working\tdirectory"]) {
+85 |       for (const cwd of ["C:\\work\\OpenCode", "/tmp/You are powered by the model named Demo"]) {
+86 |         const bare = `<env>\n  ${label}: ${cwd}\n</env>`
+87 |         const source = `Keep tool policy.\n${bare}\nResidual OpenCode prose.`
+88 |         const out = scrubOpencodeFingerprints(source, mode)
+89 |         expect(out).toContain(cwd)
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "C:\\work\\OpenCode"
+Received: "Keep tool policy.\n<env>\n  Primary working directory: C:\\work\\the assistant\n</env>\nResidual the assistant prose."
+
+      at <anonymous> (/Users/rynfar/repos/meridian-plugin-opencode-scrub/src/__tests__/cwd.test.ts:89:21)
+(fail) protects Primary and case-varied cwd metadata before prose rules (aggressive) [2.52ms]
+84 |     for (const label of ["Primary working directory", "primary WORKING DIRECTORY", "Working\tdirectory"]) {
+85 |       for (const cwd of ["C:\\work\\OpenCode", "/tmp/You are powered by the model named Demo"]) {
+86 |         const bare = `<env>\n  ${label}: ${cwd}\n</env>`
+87 |         const source = `Keep tool policy.\n${bare}\nResidual OpenCode prose.`
+88 |         const out = scrubOpencodeFingerprints(source, mode)
+89 |         expect(out).toContain(cwd)
+                         ^
+error: expect(received).toContain(expected)
+
+Expected to contain: "/tmp/You are powered by the model named Demo"
+Received: "Keep tool policy.\n<env>\n  Primary working directory: /tmp/</env>\nResidual OpenCode prose."
+
+      at <anonymous> (/Users/rynfar/repos/meridian-plugin-opencode-scrub/src/__tests__/cwd.test.ts:89:21)
+(fail) protects Primary and case-varied cwd metadata before prose rules (minimal) [0.17ms]
+
+2 tests failed:
+(fail) protects Primary and case-varied cwd metadata before prose rules (aggressive) [2.52ms]
+(fail) protects Primary and case-varied cwd metadata before prose rules (minimal) [0.17ms]
+
+ 55 pass
+ 2 fail
+ 582 expect() calls
+Ran 57 tests across 4 files. [160.00ms]
